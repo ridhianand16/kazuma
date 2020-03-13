@@ -1,0 +1,144 @@
+openapi: 3.0.0
+info:
+  version: '1.0.0'
+  title: 'FreeLancer Alpha'
+  description: 'A website where organizations can publish projects to be outsourced to freelancers. Freelancers can bid on projects to work on them. '
+# Added by API Auto Mocking Plugin
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/swagdhi/FreeLancerPro/1.0.0
+  - description: Deploy the app from Github repo
+    url: http://localhost:9678
+    
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+    
+    Employer:
+      type: object
+      properties:
+        companyid:  
+          type: string
+        password:
+          type: string
+        name: 
+          type: string
+
+    Project:
+      type: object
+      properties:
+        projectID:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+
+  responses:
+    '401':
+          description: Request full of errors.
+        '402':
+          description: API limit reached
+        '403':
+          description: No access to the resources.
+        '404':
+          description: Not found. Server did not find matching request.
+        '406':
+          description: Request did not validate.
+        '407':
+          description: Server unavailable. Try Later.
+
+
+    Project:
+      type: object
+
+    Error:
+
+        
+    
+paths:
+  /register/user:
+    post:
+      operationId: addUser
+      tags:
+        - user
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        description: Optional description in *Markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pet'
+      parameters:
+
+        
+    put:
+      operationId: updateUser
+      tags: 
+        - user
+      responses:
+        '200':
+          description: Success
+            content:
+              application/json:
+                schema:
+                  $ref = '#/components/schemas/User'
+                example:
+                  {
+                    
+                  }
+
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          
+          
+  /register/employer:
+    post:
+      operationId: addEmployer
+      tags:
+        - employer
+      responses:
+        '203': 
+          description: Success
+        
+    
+  
+  '/projects/{projectID}':
+    get:
+      operationId: displayProject
+      tags:
+        - project
+        - user
+        - employer
+      responses:
+        '202':
+          description: Success
+        
+      
+  /user/{username}/profile:
+  
+  
+  

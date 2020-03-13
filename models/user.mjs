@@ -1,15 +1,17 @@
 import mongoose from 'mongoose'
-import Schema from mongoose.Schema
+import express from 'express'
 
-const User = new Schema({
+var router = express.Router();
+
+export const UserSchema = mongoose.Schema({
     username: 
     {
         type: String,
-        required: true
+        required: true                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
     },
     name: 
     {
-        type: String,
+        type: String,                                                                                                                                                                                                                                                       
         required: true
     },
     email: 
@@ -32,11 +34,13 @@ const User = new Schema({
         type: Array,
         required: false
     },
-    isCoder: 
+    isEmployer: 
     {
         type: Boolean,
         default: false
     }
 })
 
-export default mongoose.model('user',user);
+export var User =  mongoose.model('User',UserSchema);
+
+export default router;

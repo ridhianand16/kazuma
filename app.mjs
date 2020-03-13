@@ -7,47 +7,38 @@ import mongoose from 'mongoose';
 import dotenv from "dotenv";
 import jwt from 'jsonwebtoken';
 import apiRoutes from './routes/api-routes.mjs' 
-//import { render } from 'pug';
+import auth from './routes/auth.mjs'
 
 const app = express();
 dotenv.config()
 
-
 //initializing db
-mongoose.connect('mongodb://localhost/resthub', 
+mongoose.connect(process.env.DB_CONNECTION,
 { 
 	useUnifiedTopology: true,
 	useNewUrlParser: true
-}); 
+}).then(() => console.log("Database Connected!"))
+.catch(err => console.log(JSON.stringify(err,undefined,2)));
+
 var db = mongoose.connection;
 
-// temporary db
-const ads = [
-	{title: 'Hello, world (again)!'}
-];
-
-app.use('/api', apiRoutes);
-
-//Helmet - enhance API's security
+app.use('/api/', apiRoutes);
+app.use('/auth/',auth);
 app.use(helmet());
-
-//bodyParser - to parse JSON bodies into JS objects
 app.use(bodyParser.json());
-
-//CORS - 
 app.use(cors());
-
-//morgan - logs HTTP requests
 app.use(morgan('combined'));
 
 app.set("view engine", "pug");
 app.set("views", "./views");
 
-// defining an endpoint to return all ads
 app.get('/', async(req, res) => {
-	//res.send(ads);
-	res.render("register");
+	res.render("layout");
 });
+
+/*app.get('/register', async(req, res) => {
+	res.render("register");
+});*/
 
 app.get('/api', async(req,res) => {
 	res.json({
@@ -62,7 +53,7 @@ app.post('/api', async(req,res) => {
 		}, privateKey, {algorithm: 'RS256'}, function (err,token){
 		console.log(token);
 	})
-})
+})																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																						
 
 app.listen(9678, () => {
 	console.log('listening on port 9678');

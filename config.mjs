@@ -9,8 +9,10 @@ const { parsed: envs } = result;
 console.log(envs);
 module.exports = envs;
 /* */
-module.exports = {
+var constants = {
   endpoint: process.env.API_URL,
   masterKey: process.env.API_KEY,
   port: process.env.PORT
 }; /**/
+
+export default constants;
