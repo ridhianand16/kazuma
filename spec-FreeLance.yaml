@@ -44,27 +44,31 @@ components:
         description:
           type: string
 
-  responses:
-    '401':
-          description: Request full of errors.
-        '402':
-          description: API limit reached
-        '403':
-          description: No access to the resources.
-        '404':
-          description: Not found. Server did not find matching request.
-        '406':
-          description: Request did not validate.
-        '407':
-          description: Server unavailable. Try Later.
-
-
-    Project:
+    Error:
       type: object
 
-    Error:
+  responses:
+    '401':
+      description: Request full of errors.
+    '402':
+      description: API limit reached
+    '403':
+      description: No access to the resources.
+    '404':
+      description: Not found. Server did not find matching request.
+    '406':
+      description: Request did not validate.
+    '407':
+      description: Server unavailable. Try Later.
 
-        
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+- bearerAuth: []
     
 paths:
   /register/user:
@@ -75,22 +79,44 @@ paths:
       responses:
         '200':
           description: Success
+          content:
+            application/json:
+              schema:
+                type: integer
+
         default:
           description: Unexpected error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref : '#/components/schemas/Error'
       requestBody:
         description: Optional description in *Markdown*
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Pet'
-      parameters:
+              $ref: '#/components/schemas/User'
 
-        
+    get:
+      operationId: displayRegisterUserForm
+      tags:
+        - user
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: integer
+
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/Error'
+       
     put:
       operationId: updateUser
       tags: 
@@ -98,14 +124,14 @@ paths:
       responses:
         '200':
           description: Success
-            content:
-              application/json:
-                schema:
-                  $ref = '#/components/schemas/User'
-                example:
-                  {
-                    
-                  }
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/User'
+              example:
+                {                    
+                 
+                }
 
         default:
           description: Unexpected error
@@ -113,7 +139,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-          
           
   /register/employer:
     post:
@@ -123,9 +148,14 @@ paths:
       responses:
         '203': 
           description: Success
+      requestBody:
+        description: Retuerns the registers employer
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Employer'
         
-    
-  
   '/projects/{projectID}':
     get:
       operationId: displayProject
@@ -136,9 +166,82 @@ paths:
       responses:
         '202':
           description: Success
-        
-      
-  /user/{username}/profile:
-  
-  
-  
+      parameters:
+        - in: path
+          name: projectID
+          required: true
+          schema:
+            type: string
+          description: The Project ID
+
+  '/user/{username}/profile':
+    get:
+      operationId: displayUserProfile
+      tags:
+        - user
+      responses:
+        '200':
+          description: Successfully geting user profile
+      parameters:
+        - description: user identifier
+          in: path
+          name: username
+          schema:
+            type: string
+          required: true
+
+  /me:
+    get:
+      operationId: Displays user's own profile
+      tags:
+        - user
+        - employer
+      responses:
+        '200':
+          description: Success
+      parameters:
+        - in: header
+          required: true
+          name: username
+          schema:
+            type: string
+        - in : header
+          required: true
+          name: type
+          schema:
+            type: boolean
+
+  /me/addProject:
+    put:
+      operationId: addProject
+      tags:
+        - employer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: integer
+
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/Error'
+      requestBody:
+        description: Optional description in *Markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+      parameters:
+        - in: header 
+          name: type
+          schema: 
+            type: boolean
+          required: true
+
+
