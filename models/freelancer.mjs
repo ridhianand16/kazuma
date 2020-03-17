@@ -34,11 +34,6 @@ export const UserSchema = mongoose.Schema({
         type: Array,
         required: false
     },
-    isEmployer: 
-    {
-        type: Boolean,
-        default: false
-    }
 })
 
 export var User =  mongoose.model('User',UserSchema);

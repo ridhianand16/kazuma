@@ -9,7 +9,10 @@ servers:
     url: https://virtserver.swaggerhub.com/swagdhi/FreeLancerPro/1.0.0
   - description: Deploy the app from Github repo
     url: http://localhost:9678
-    
+ 
+ #so I need to add skills to user and project schema and example
+
+
 components:
   schemas:
     User:
@@ -33,6 +36,12 @@ components:
           type: string
         name: 
           type: string
+        contact:
+          type: string
+        email:
+         type: string
+        address:
+          type: string
 
     Project:
       type: object
@@ -43,6 +52,12 @@ components:
           type: string
         description:
           type: string
+        status:
+          type: string
+          enum: 
+            - accepted
+            - ongoing
+            - inactive
 
     Error:
       type: object
@@ -60,6 +75,35 @@ components:
       description: Request did not validate.
     '407':
       description: Server unavailable. Try Later.
+
+  examples:
+    User:
+      value:
+        username: test
+        password: 2349087seiweruka
+        name: John Doe
+        email: john.doe@domain.com
+
+    Employer:
+      value:
+        companyid: we_work
+        password: 034098sdfoiszerl
+        name: WeWork
+        email: jane.doe@wework.com
+
+    Project:
+      value:
+        projectId: companyName.projectName
+        name: Pied Piper
+        password: 09812309sduio
+        companyid: WeWork
+        status: inactive
+
+    
+    Error:
+      value:
+        display: Error - internet connection is bad.
+        code: 404
 
   securitySchemes:
     bearerAuth:
@@ -82,7 +126,9 @@ paths:
           content:
             application/json:
               schema:
-                type: integer
+                $ref: '#/components/schemas/User'
+              example:
+                $ref: '#/components/schemas/User'
 
         default:
           description: Unexpected error
@@ -90,6 +136,9 @@ paths:
             application/json:
               schema:
                 $ref : '#/components/schemas/Error'
+              example: 
+                $ref: '#/components/examples/Error'
+
       requestBody:
         description: Optional description in *Markdown*
         required: true
@@ -97,6 +146,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/User'
+              example:
+                $ref: '#/components/examples/User'
 
     get:
       operationId: displayRegisterUserForm
@@ -108,7 +159,9 @@ paths:
           content:
             application/json:
               schema:
-                type: integer
+                $ref: '#/components/schemas/User'
+              example:
+                $ref: '#/components/examples/User'
 
         default:
           description: Unexpected error
@@ -116,6 +169,8 @@ paths:
             application/json:
               schema:
                 $ref : '#/components/schemas/Error'
+              example:
+                $ref: '#/components/examples/Error'
        
     put:
       operationId: updateUser
@@ -129,9 +184,7 @@ paths:
               schema:
                 $ref : '#/components/schemas/User'
               example:
-                {                    
-                 
-                }
+                $ref: '#/components/examples/User'      
 
         default:
           description: Unexpected error
@@ -155,7 +208,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Employer'
-        
+            example:
+              $ref: '#/components/examples/Employer'
+
   '/projects/{projectID}':
     get:
       operationId: displayProject
@@ -211,7 +266,7 @@ paths:
           schema:
             type: boolean
 
-  /me/addProject:
+  /me/bidProject:
     put:
       operationId: addProject
       tags:
@@ -222,7 +277,9 @@ paths:
           content:
             application/json:
               schema:
-                type: integer
+                $ref: '#/components/schemas/Project'
+              example: 
+                $ref: '#/components/examples/Project'
 
         default:
           description: Unexpected error
@@ -230,13 +287,17 @@ paths:
             application/json:
               schema:
                 $ref : '#/components/schemas/Error'
+              example:
+                $ref: '#/components/schemas/Error'
       requestBody:
-        description: Optional description in *Markdown*
+        description: Allows freelancers to bid on project
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Project'
+            example: 
+              $ref: '#/components/examples/Project'
       parameters:
         - in: header 
           name: type
@@ -244,4 +305,38 @@ paths:
             type: boolean
           required: true
 
-
+  /me/createProject:
+    put:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+              example: 
+                $ref: '#/components/examples/Project'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/Error'
+              example:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        description: Allows an Employer to add new projects for bidding
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+            example: 
+              $ref: '#/components/examples/Project'
+      parameters:
+        - in: header 
+          name: type
+          schema: 
+            type: boolean
+          required: true
+ 

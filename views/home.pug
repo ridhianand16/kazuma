@@ -1,0 +1,17 @@
+//this is the profile page for both. needs project list access.
+//if adding featured project, edit div class card with a header div
+
+
+extends layout
+
+block content
+
+    each course in #courses
+        div(class="card")
+            div(class='card-body')
+                h5 #{course.name}
+                p #{course.description}
+                p 
+                each skill in course.skills 
+                    i #{skill}
+                <a href="#" class="btn btn-primary">Bid on project</a>
