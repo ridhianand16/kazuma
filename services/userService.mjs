@@ -1,3 +1,12 @@
+//contains the following middlewares
+
+//getUserDetails() - used for finding username (to display a profie)
+//updateUserPassword() - used to update password.
+
+//note: can be used for both freelancer and employer
+
+const express = require('express');
+const router = express.Router();
 
 export const getUserDetails = (db, userName) => {
 	return new Promise((resolve, reject) => {
@@ -15,7 +24,7 @@ export const getUserDetails = (db, userName) => {
 	});
  };
 
- export const updateUserPassword = (db, userName,pwd) => {
+export const updateUserPassword = (db, userName,pwd) => {
 	return db.collection('user').updateOne({'username': userName }, {
 		$set: {password:pwd} 
 	})
@@ -25,4 +34,6 @@ export const getUserDetails = (db, userName) => {
 	.catch((err) => {
 		return Promise.reject(err);
 	})
- }
+}
+
+export default router;

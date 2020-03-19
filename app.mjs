@@ -6,8 +6,12 @@ import morgan from 'morgan';
 import mongoose from 'mongoose';
 import dotenv from "dotenv";
 import jwt from 'jsonwebtoken';
-import apiRoutes from './routes/api-routes.mjs' 
-import auth from './routes/auth.mjs'
+
+import apiRoutes from './routes/api-routes.mjs' ;
+import auth from './routes/auth.mjs';
+import register from './routes/register.mjs';
+import projects from './routes/projects.mjs';
+
 
 const app = express();
 dotenv.config()
@@ -22,28 +26,22 @@ mongoose.connect(process.env.DB_CONNECTION,
 
 var db = mongoose.connection;
 
-app.use('/api/', apiRoutes);
-app.use('/auth/',auth);
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(cors());
 app.use(morgan('combined'));
-
+app.use(bodyParser.urlencoded({ extended: false }))
 app.set("view engine", "pug");
 app.set("views", "./views");
 
+app.use('/api/', apiRoutes);
+app.use('/auth/',auth);
+app.use('/register/',register);
+app.use('/project/',projects);
+
+
 app.get('/', async(req, res) => {
 	res.render("layout");
-});
-
-/*app.get('/register', async(req, res) => {
-	res.render("register");
-});*/
-
-app.get('/api', async(req,res) => {
-	res.json({
-		message: 'Welcome to my API'
-	})
 });
 
 app.post('/api', async(req,res) => {

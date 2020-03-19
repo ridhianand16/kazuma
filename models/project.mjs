@@ -35,7 +35,7 @@ export const ProjectSchema = mongoose.Schema({
         type: String,
         required: false
     },
-    skillsRequired:
+    skills:
     {
         type: Array,
         required: false

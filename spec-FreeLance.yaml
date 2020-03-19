@@ -266,7 +266,7 @@ paths:
           schema:
             type: boolean
 
-  /me/bidProject:
+  /me/bidProject/{projectID}:
     put:
       operationId: addProject
       tags:
@@ -340,3 +340,130 @@ paths:
             type: boolean
           required: true
  
+  /projects:
+    get:
+      description: Displays all the projects
+      operationId: displayProjects
+      tags:
+        - project
+      responses:
+        '200':
+          description: Success
+
+  /projects/{status}:
+    get:
+      description: Displays all the projects of a particular status (active/inactive/ongoing)
+      operationId: filterProjects
+      tags:
+        - project
+      responses:
+        '200':
+          description: Success
+
+  /employer/{employerID}/projects/{status}:
+    get:
+      description: Displays all the projects started by an employer with a filter by status
+      operationId: filterEmployerProjects
+      tags:
+        - project
+        - employer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+              example:
+                $ref: '#/components/schemas/Project'
+
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/Error'
+              example: 
+                $ref: '#/components/examples/Error'
+
+  /auth/user:
+    get:
+      description: Renders Login Page of User/Freelancer
+      operationId: getLoginUser
+      tags:
+        - user
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/Error'
+              example: 
+                $ref: '#/components/examples/Error'
+    post:
+      description: Login request is sent (Freelancer)
+      operationId: postLoginUser
+      tags:
+        - user
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              example:
+                $ref: '#/components/schemas/User'
+
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/Error'
+              example: 
+                $ref: '#/components/examples/Error'
+
+  /auth/employer:
+    get:
+      description: Renders Login Page of Employer
+      operationId: getLoginEmployer
+      tags:
+        - user
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/Error'
+              example: 
+                $ref: '#/components/examples/Error'
+    post:
+      description: Login request is sent (Employer)
+      operationId: postLoginEmployer
+      tags:
+        - employer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employer'
+              example:
+                $ref: '#/components/schemas/Employer'
+
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/Error'
+              example: 
+                $ref: '#/components/examples/Error'

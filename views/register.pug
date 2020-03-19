@@ -1,0 +1,14 @@
+extends layout
+
+block content
+
+	form(method='GET')
+
+		div(class="card")
+			div(class='card-header')
+				h3 What type of user are you?
+			div(class='card-body')
+				button(type="submit" class="btn btn-primary" formaction = "/register/user" )
+					span(class="glyphicon glyphicon-plus") Freelancer
+				button(type="submit" class="btn btn-primary" formaction = "/register/employer" style="margin-left: 1em"  )
+					span(class="glyphicon glyphicon-plus") Employer

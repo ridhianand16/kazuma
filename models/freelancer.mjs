@@ -1,3 +1,4 @@
+import Joi from 'joi'
 import mongoose from 'mongoose'
 import express from 'express'
 
@@ -34,6 +35,14 @@ export const UserSchema = mongoose.Schema({
         type: Array,
         required: false
     },
+})
+
+export const validateUser = Joi.object({
+    username: Joi.string().min(5).max(50).required(),
+    email: Joi.string().min(5).max(255).required().email(),
+    password: Joi.string().min(5).max(255).required(),
+    name: Joi.string(),
+    skills: Joi.string()
 })
 
 export var User =  mongoose.model('User',UserSchema);
