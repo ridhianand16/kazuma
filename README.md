@@ -112,8 +112,9 @@ You can access the OpenAPI Spec [here](https://app.swaggerhub.com/apis/swagdhi/K
 
 The endpoints are as follows:
 
+
 | EndPoint  | CRUD Methods  | Description |
-| ------------- | ------------- |
+| ------------- | ------------- | ------------- |
 | /register/user  | POST, GET, PUT, DELETE | Freelancer registration |
 | /register/employer | POST, GET, PUT, DELETE | Employer registration |
 | '/projects/{projectID}' | POST, GET, PUT, DELETE | CRUD operations on project |
