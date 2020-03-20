@@ -1,0 +1,966 @@
+openapi: 3.0.0
+info:
+  version: '1.0.1'
+  title: 'Kazuma'
+  description: 'A website where organizations can publish projects to be outsourced to freelancers. Freelancers can bid on projects to work on them. '
+# Added by API Auto Mocking Plugin
+servers:
+# Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/swagdhi/Kazuma/1.0.1
+  - description: Deploy the app from Github repo
+    url: http://localhost:9678
+ 
+components:
+  schemas:
+    User:
+      type: object
+      description: The schema of the freelancer
+      properties:
+        username:
+          type: string
+          description: The username of the freelancer
+        password:
+          type: string
+          description: The freelancer's password
+        name:
+          type: string
+          description: The freelancer's name
+        email:
+          type: string
+          description: The freelancer's email ID
+        skills:
+          type: array
+          description: The freelancer's skill set 
+          items:
+            type: string
+          
+    Employer:
+      type: object
+      description: The schema of the employer
+      properties:
+        employerID:  
+          type: string
+          description: The unique ID which identifies the employer (entered by the employer)
+        password:
+          type: string
+          description: The password used to secure the account
+        name: 
+          type: string
+          description: The name of the employer
+        contact:
+          type: string
+          description: The contact number of the employer
+        email:
+         type: string
+         description: The email ID of the employer
+        address:
+          type: string
+          description: The address of the employer
+
+    Project:
+      type: object
+      description: The schema of a project which the user can bid on. The projects are created by employers and bid on by freelancers
+      properties:
+        projectID:
+          type: string
+          description: A unique project ID (specified by the employer)
+        name:
+          type: string
+          description: The name of the project
+        description:
+          type: string
+          description: A brief description of the project
+        status:
+          type: string
+          description: The current status of a project. (accepted - bidding over, inactive - bidding not accepted. ongoing- biddings accepted)
+          enum: 
+            - accepted
+            - ongoing
+            - inactive
+
+    Error:
+      type: object
+      description: The object that is returned when errors are encountered
+      properties:
+        code:
+          type: number
+          description: The error status code
+        display:
+          type: string
+          description: The message to be displayed on the webpage
+        
+  responses:
+    '401':
+      description: Request full of errors.
+    '402':
+      description: API limit reached
+    '403':
+      description: No access to the resources.
+    '404':
+      description: Not found. Server did not find matching request.
+    '406':
+      description: Request did not validate.
+    '407':
+      description: Server unavailable. Try Later.
+
+  examples:
+    User:
+      value:
+        username: test
+        password: 2349087seiweruka
+        name: John Doe
+        email: john.doe@domain.com
+        skills: {python,c++}
+
+    Employer:
+      value:
+        companyid: we_work
+        password: 034098sdfoiszerl
+        name: WeWork
+        email: jane.doe@wework.com
+        contact: 9444995559
+        address: 4 Privet Drive, Little Whinging, London
+
+    Project:
+      value:
+        projectId: companyName.projectName
+        name: Pied Piper
+        companyid: WeWork
+        status: inactive
+        description: A sample project
+
+    Error:
+      value:
+        display: Error - internet connection is bad.
+        code: 404
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+- bearerAuth: []
+    
+paths:
+  /register/user:
+    post:
+      operationId: addUser
+      tags:
+        - user
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              example:
+                $ref: '#/components/schemas/User'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/Error'
+              example: 
+                $ref: '#/components/examples/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            example:
+              $ref: '#/components/examples/User'
+
+    get:
+      operationId: displayRegisterUserForm
+      tags:
+        - user
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              example:
+                $ref: '#/components/examples/User'
+
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/Error'
+              example:
+                $ref: '#/components/examples/Error'
+       
+    put:
+      operationId: updateUser
+      tags: 
+        - user
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/User'
+              example:
+                $ref: '#/components/examples/User'      
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+              example:
+                $ref: '#/components/examples/User'
+
+    delete:
+      operationId: deleteUser
+      tags: 
+        - user
+      responses:
+        '200':
+          description: Successs
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                $ref: '#/components/schemas/Error'
+                
+  /register/employer:
+    post:
+      operationId: addEmployer
+      tags:
+        - employer
+      responses:
+        '200': 
+          description: Success
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/Error'
+              example: 
+                $ref: '#/components/examples/Error'
+      requestBody:
+        description: Returns the registered employer
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Employer'
+            example:
+              $ref: '#/components/examples/Employer'
+              
+    get:
+      operationId: displayRegisterEmployerForm
+      tags:
+        - user
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employer'
+              example:
+                $ref: '#/components/examples/Employer'
+
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/Error'
+              example:
+                $ref: '#/components/examples/Error'
+       
+    put:
+      operationId: updateEmployer
+      tags: 
+        - employer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/Employer'
+              example:
+                $ref: '#/components/examples/Employer'      
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Employer'
+              example:
+                $ref: '#/components/examples/Employer'
+
+    delete:
+      operationId: deleteEmployer
+      tags: 
+        - employer
+      responses:
+        '200':
+          description: Successs
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                $ref: '#/components/schemas/Error'
+                
+  '/projects/{projectID}':
+    get:
+      operationId: displayProject
+      tags:
+        - project
+        - user
+        - employer
+      responses:
+        '202':
+          description: Success
+      parameters:
+        - in: path
+          name: projectID
+          required: true
+          schema:
+            type: string
+          description: The Project ID
+        - description: The authentication token
+          in: header
+          name: AUTH_TOKEN
+          required: true
+          schema:
+            type: string
+          x-data-threescale-name: AUTH_TOKEN
+        - description: The user Identifier
+          in: header
+          name: username
+          required: true
+          schema:
+            type: string
+          x-data-threescale-name: username
+        - description: The user type
+          in: header
+          name: userType
+          required: true
+          schema:
+            type: string
+            enum:
+              - freelancer
+              - employer
+  
+    post:
+      operationId: addProject
+      tags:
+        - project
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/Error'
+              example: 
+                $ref: '#/components/examples/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+            example:
+              $ref: '#/components/examples/Project'
+      parameters:
+        - in: path
+          name: projectID
+          required: true
+          schema:
+            type: string
+          description: The Project ID
+        - description: The authentication token
+          in: header
+          name: AUTH_TOKEN
+          required: true
+          schema:
+            type: string
+          x-data-threescale-name: AUTH_TOKEN
+        - description: The user Identifier
+          in: header
+          name: username
+          required: true
+          schema:
+            type: string
+          x-data-threescale-name: username
+        - description: The user type
+          in: header
+          name: userType
+          required: true
+          schema:
+            type: string
+            enum:
+              - freelancer
+              - employer
+  
+    put:
+      operationId: updateProject
+      tags: 
+        - user
+      responses:
+        '200':
+          description: Success 
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+              example:
+                $ref: '#/components/examples/Project'
+                
+      parameters:
+        - in: path
+          name: projectID
+          required: true
+          schema:
+            type: string
+          description: The Project ID
+        - description: The authentication token
+          in: header
+          name: AUTH_TOKEN
+          required: true
+          schema:
+            type: string
+          x-data-threescale-name: AUTH_TOKEN
+        - description: The user Identifier
+          in: header
+          name: username
+          required: true
+          schema:
+            type: string
+          x-data-threescale-name: username
+        - description: The user type
+          in: header
+          name: userType
+          required: true
+          schema:
+            type: string
+            enum:
+              - freelancer
+              - employer
+  
+    delete:
+      operationId: deleteProject
+      tags: 
+        - employer
+      responses:
+        '200':
+          description: Successs
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                $ref: '#/components/schemas/Error'
+      parameters:
+        - in: path
+          name: projectID
+          required: true
+          schema:
+            type: string
+          description: The Project ID
+        - description: The authentication token
+          in: header
+          name: AUTH_TOKEN
+          required: true
+          schema:
+            type: string
+          x-data-threescale-name: AUTH_TOKEN
+        - description: The user Identifier
+          in: header
+          name: username
+          required: true
+          schema:
+            type: string
+          x-data-threescale-name: username
+        - description: The user type
+          in: header
+          name: userType
+          required: true
+          schema:
+            type: string
+            enum:
+              - freelancer
+              - employer
+        
+  '/user/{username}/profile':
+    get:
+      operationId: displayUserProfile
+      tags:
+        - user
+        - projects
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              example:
+                $ref: '#/components/examples/User'
+      parameters:
+        - description: user identifier
+          in: path
+          name: username
+          schema:
+            type: string
+          required: true
+        - description: The authentication token
+          in: header
+          name: AUTH_TOKEN
+          required: true
+          schema:
+            type: string
+          x-data-threescale-name: AUTH_TOKEN
+        - description: The user Identifier
+          in: header
+          name: username
+          required: true
+          schema:
+            type: string
+          x-data-threescale-name: username
+        - description: The user type
+          in: header
+          name: userType
+          required: true
+          schema:
+            type: string
+            enum:
+              - freelancer
+              - employer
+
+  '/employer/{username}/profile':
+    get:
+      operationId: displayEmployerProfile
+      tags:
+        - employer
+        - project
+      responses:
+        '200':
+          description: Successfully geting employer profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employer'
+              example:
+                $ref: '#/components/examples/Employer'
+      parameters:
+        - description: user identifier
+          in: path
+          name: username
+          schema:
+            type: string
+          required: true
+        - description: The authentication token
+          in: header
+          name: AUTH_TOKEN
+          required: true
+          schema:
+            type: string
+          x-data-threescale-name: AUTH_TOKEN
+        - description: The user Identifier
+          in: header
+          name: username
+          required: true
+          schema:
+            type: string
+          x-data-threescale-name: username
+        - description: The user type
+          in: header
+          name: userType
+          required: true
+          schema:
+            type: string
+            enum:
+              - freelancer
+              - employer
+
+  /me:
+    get:
+      description: Displays user's own profile
+      operationId: me
+      tags:
+        - user
+        - employer
+      responses:
+        '200':
+          description: Success
+      parameters:
+        - description: The authentication token
+          in: header
+          name: AUTH_TOKEN
+          required: true
+          schema:
+            type: string
+          x-data-threescale-name: AUTH_TOKEN
+        - description: The user Identifier
+          in: header
+          name: username
+          required: true
+          schema:
+            type: string
+          x-data-threescale-name: username
+        - description: The user type
+          in: header
+          name: userType
+          required: true
+          schema:
+            type: string
+            enum:
+              - freelancer
+              - employer
+
+  '/me/bidProject/project/{projectID}':
+    post:
+      operationId: bidOnProject
+      description: Lets the freelancer bid on a project specified by the projectID
+      tags:
+        - user
+        - project
+        - employer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+              example: 
+                $ref: '#/components/examples/Project'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/Error'
+              example:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        description: Allows freelancers to bid on project
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+            example: 
+              $ref: '#/components/examples/Project'
+      parameters:
+        - in: path
+          name: projectID
+          schema: 
+            type: string
+          required: true
+        - description: The authentication token
+          in: header
+          name: AUTH_TOKEN
+          required: true
+          schema:
+            type: string
+          x-data-threescale-name: AUTH_TOKEN
+        - description: The user Identifier
+          in: header
+          name: username
+          required: true
+          schema:
+            type: string
+          x-data-threescale-name: username
+        - description: The user type
+          in: header
+          name: userType
+          required: true
+          schema:
+            type: string
+            enum:
+              - freelancer
+              - employer
+
+  /projects:
+    get:
+      description: Displays all the projects
+      operationId: displayProjects
+      tags:
+        - project
+      responses:
+        '200':
+          description: Success
+      parameters:
+        - description: The authentication token
+          in: header
+          name: AUTH_TOKEN
+          required: true
+          schema:
+            type: string
+          x-data-threescale-name: AUTH_TOKEN
+        - description: The user Identifier
+          in: header
+          name: username
+          required: true
+          schema:
+            type: string
+          x-data-threescale-name: username
+        - description: The user type
+          in: header
+          name: userType
+          required: true
+          schema:
+            type: string
+            enum:
+              - freelancer
+              - employer
+
+  '/projects/{status}':
+    get:
+      description: Displays all the projects of a particular status (active/inactive/ongoing)
+      operationId: filterProjects
+      tags:
+        - project
+      responses:
+        '200':
+          description: Success
+      parameters:
+        - in: path
+          name: status
+          schema: 
+            type: string
+            enum:
+              - ongoing
+              - inactive
+              - accepted
+          required: true
+        - description: The authentication token
+          in: header
+          name: AUTH_TOKEN
+          required: true
+          schema:
+            type: string
+          x-data-threescale-name: AUTH_TOKEN
+        - description: The user Identifier
+          in: header
+          name: username
+          required: true
+          schema:
+            type: string
+          x-data-threescale-name: username
+        - description: The user type
+          in: header
+          name: userType
+          required: true
+          schema:
+            type: string
+            enum:
+              - freelancer
+              - employer
+
+  '/employer/{username}/projects/{status}':
+    get:
+      description: Displays all the projects started by an employer with a filter by status
+      operationId: filterEmployerProjects
+      tags:
+        - project
+        - employer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+              example:
+                $ref: '#/components/schemas/Project'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/Error'
+              example: 
+                $ref: '#/components/examples/Error'
+      parameters:
+        - in: path
+          name: status
+          schema: 
+            type: string
+            enum:
+              - ongoing
+              - inactive
+              - accepted
+          required: true
+        - in: path
+          name: username
+          schema:
+            type: string
+          required: true
+        - description: The authentication token
+          in: header
+          name: AUTH_TOKEN
+          required: true
+          schema:
+            type: string
+          x-data-threescale-name: AUTH_TOKEN
+        - description: The user Identifier
+          in: header
+          name: username
+          required: true
+          schema:
+            type: string
+          x-data-threescale-name: username
+        - description: The user type
+          in: header
+          name: userType
+          required: true
+          schema:
+            type: string
+            enum:
+              - freelancer
+              - employer
+
+  /auth/user:
+    get:
+      description: Renders Login Page of User/Freelancer
+      operationId: getLoginUser
+      tags:
+        - user
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/Error'
+              example: 
+                $ref: '#/components/examples/Error'
+    
+    post:
+      description: Login request is sent (Freelancer)
+      operationId: postLoginUser
+      tags:
+        - user
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              example:
+                $ref: '#/components/schemas/User'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/Error'
+              example: 
+                $ref: '#/components/examples/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            example:
+              $ref: '#/components/examples/User'
+      
+  /auth/employer:
+    get:
+      description: Renders Login Page of Employer
+      operationId: getLoginEmployer
+      tags:
+        - user
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/Error'
+              example: 
+                $ref: '#/components/examples/Error'
+    
+    post:
+      description: Login request is sent (Employer)
+      operationId: postLoginEmployer
+      tags:
+        - employer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employer'
+              example:
+                $ref: '#/components/schemas/Employer'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref : '#/components/schemas/Error'
+              example: 
+                $ref: '#/components/examples/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Employer'
+            example:
+              $ref: '#/components/examples/Employer'
